@@ -11,7 +11,6 @@ class Like extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'likes';
-    protected $primaryKey = 'like_id';
     protected $fillable = [
         'user_id',
         'post_id',
@@ -20,11 +19,11 @@ class Like extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function post()
     {
-        return $this->belongsTo(Post::class, 'post_id', 'post_id');
+        return $this->belongsTo(Post::class, 'post_id', 'id');
     }
 }

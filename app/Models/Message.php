@@ -11,7 +11,6 @@ class Message extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'messages';
-    protected $primaryKey = 'message_id';
     protected $fillable = [
         'sender_id',
         'receiver_id',
@@ -22,12 +21,11 @@ class Message extends Model
 
     public function sender()
     {
-        return $this->belongsTo(User::class, 'sender_id', 'user_id');
+        return $this->belongsTo(User::class, 'sender_id', 'id');
     }
 
     public function receiver()
     {
-        return $this->belongsTo(User::class, 'receiver_id', 'user_id');
+        return $this->belongsTo(User::class, 'receiver_id', 'id');
     }
-
 }

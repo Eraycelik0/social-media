@@ -12,7 +12,6 @@ class RecommendationData extends Model
 
     protected $table = 'recommendation_data';
 
-    protected $primaryKey = 'recommendation_id';
     protected $fillable = [
         'user_id',
         'interest_id',
@@ -23,7 +22,7 @@ class RecommendationData extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function interest()

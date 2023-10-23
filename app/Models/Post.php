@@ -11,7 +11,6 @@ class Post extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'posts';
-    protected $primaryKey = 'post_id';
     protected $fillable = [
         'user_id',
         'post_text',
@@ -23,16 +22,16 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function likes()
     {
-        return $this->hasMany(Like::class, 'post_id', 'post_id');
+        return $this->hasMany(Like::class, 'post_id', 'id');
     }
 
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'post_id', 'post_id');
+        return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 }

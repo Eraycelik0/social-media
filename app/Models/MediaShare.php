@@ -11,7 +11,6 @@ class MediaShare extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'media_shares';
-    protected $primaryKey = 'media_id';
     protected $fillable = [
         'user_id',
         'media_type',
@@ -21,6 +20,6 @@ class MediaShare extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

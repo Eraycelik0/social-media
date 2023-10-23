@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('media_shares', function (Blueprint $table) {
-            $table->id('media_id');
+            $table->id();
             $table->unsignedBigInteger('user_id');
             $table->enum('media_type', ['Photo', 'Video']);
             $table->string('media_url');

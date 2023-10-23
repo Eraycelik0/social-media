@@ -11,7 +11,6 @@ class Follower extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'followers';
-    protected $primaryKey = 'follower_id';
     protected $fillable = [
         'following_id',
         'followed_id',
@@ -20,11 +19,11 @@ class Follower extends Model
 
     public function followerUser()
     {
-        return $this->belongsTo(User::class, 'following_id', 'user_id');
+        return $this->belongsTo(User::class, 'following_id', 'id');
     }
 
     public function followedUser()
     {
-        return $this->belongsTo(User::class, 'followed_id', 'user_id');
+        return $this->belongsTo(User::class, 'followed_id', 'id');
     }
 }

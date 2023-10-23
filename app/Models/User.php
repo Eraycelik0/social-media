@@ -13,8 +13,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    protected $primaryKey = 'user_id';
-
     /**
      * The attributes that are mass assignable.
      *
@@ -52,7 +50,17 @@ class User extends Authenticatable
 
     public function posts()
     {
-        return $this->hasMany(Post::class, 'user_id', 'user_id');
+        return $this->hasMany(Post::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     public function interests()
@@ -60,16 +68,19 @@ class User extends Authenticatable
         return $this->belongsToMany(Interest::class, 'user_interests', 'user_id', 'interest_id');
     }
 
+    public function recommendations()
+    {
+        return $this->hasMany(RecommendationData::class);
+    }
+
     public function followers()
     {
-        return $this->belongsToMany(User::class, 'followers', 'following_id', 'follower_id')
-            ->withPivot('follow_date');
+        return $this->hasMany(Follower::class, 'following_id', 'user_id');
     }
 
     public function following()
     {
-        return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id')
-            ->withPivot('follow_date');
+        return $this->hasMany(Follower::class, 'followed_id', 'user_id');
     }
 
     public function sentMessages()
@@ -82,8 +93,8 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id', 'user_id');
     }
 
-    public function mediaShares()
+    public function sharedMedia()
     {
-        return $this->hasMany(MediaShare::class, 'user_id', 'user_id');
+        return $this->hasMany(MediaShare::class);
     }
 }

@@ -11,7 +11,6 @@ class Interest extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'interests';
-    protected $primaryKey = 'interest_id';
     protected $fillable = [
         'interest_name',
         'description',
