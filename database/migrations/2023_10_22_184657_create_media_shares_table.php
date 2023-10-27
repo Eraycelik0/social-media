@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->enum('media_type', ['Photo', 'Video']);
             $table->string('media_url');
-            $table->dateTime('share_date');
             $table->timestamps();
             $table->softDeletes();
         });
