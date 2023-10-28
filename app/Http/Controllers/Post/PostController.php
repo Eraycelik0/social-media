@@ -3,33 +3,30 @@
 namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
-use App\Services\MediaShare\MediaShareService;
+use App\Services\Images\ImagesService;
 use App\Services\Post\PostService;
+use App\Services\Videos\VideoService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     protected $postService;
-    protected $mediaShareService;
+    protected $imageService;
+    protected $videoService;
 
-    public function __construct(PostService $postService, MediaShareService $mediaShareService)
+    public function __construct(PostService $postService, ImagesService $imageService, VideoService $videoService)
     {
         $this->postService = $postService;
-        $this->mediaShareService = $mediaShareService;
+        $this->imageService = $imageService;
+        $this->videoService = $videoService;
     }
 
     public function create(Request $request)
     {
         $data = $request->all();
 
-        if ($request->has('media')) {
-            $mediaResult = $this->mediaShareService->createMediaShare($data);
-            if (isset($mediaResult['errors'])) {
-                return response()->json(['errors' => $mediaResult['errors']], 400);
-            }
-
-            $data['media'] = $mediaResult['media'];
-        }
+        $data['media_photo_url'] = $this->imageService->processImage($request);
+        $data['media_video_url'] = $this->videoService->processVideo($request);
 
         $result = $this->postService->create($data);
 
@@ -44,20 +41,11 @@ class PostController extends Controller
     {
         $data = $request->all();
         $id = $request->input('user_id');
-
-        if ($request->has('media_share_id')) {
-            $mediaShareId = $request->input('media_share_id');
-            $mediaRequestData = $data['media'];
-
-            $mediaRequest = new Request(['user_id' => $mediaRequestData['user_id'], 'media_type' => $mediaRequestData['type'], 'media_url' => $mediaRequestData['file']]);
-
-            $mediaResult = $this->mediaShareService->updateMediaShare($mediaRequest, $mediaShareId);
-            if (isset($mediaResult['errors'])) {
-                return response()->json(['errors' => $mediaResult['errors']], 400);
-            }
-        }
+        $data['media_photo_url'] = $this->imageService->processUpdateImage($request);
+        $data['media_video_url'] = $this->videoService->processUpdateVideo($request);
 
         $result = $this->postService->update($id, $data);
+
         if (isset($result['errors'])) {
             return response()->json(['errors' => $result['errors']], 400);
         }

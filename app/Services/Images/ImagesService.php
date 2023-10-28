@@ -2,52 +2,60 @@
 
 namespace App\Services\Images;
 
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ImagesService
 {
-    protected $imageService;
-
-    public function __construct(ImagesService $imageService)
+    public function processImage(Request $request)
     {
-        $this->imageService = $imageService;
-    }
+        if ($request->hasFile('media_photo_url')) {
+            $validator = Validator::make($request->all(), [
+                'media_photo_url' => 'image|mimes:jpeg,png,jpg',
+            ]);
 
-    public function processMultipleImages(Request $request)
-    {
-        $imageURLs = [];
-
-        if ($request->hasFile('images')) {
-            $images = $request->file('images');
-
-            foreach ($images as $image) {
-                $imageURL = $this->imageService->processImage($image);
-                if (is_array($imageURL) && array_key_exists('errors', $imageURL)) {
-                    return $imageURL;
-                }
-                $imageURLs[] = $imageURL;
+            if ($validator->fails()) {
+                return ['errors' => $validator->errors()->all()];
             }
+
+            $image = $request->file('media_photo_url');
+            $imageName = time() . rand(0, 100) . '.' . $image->getClientOriginalExtension();
+            $imagePath = public_path('images/');
+            $image->move($imagePath, $imageName);
+            $imageURL = '/images/' . $imageName;
+
+            return $imageURL;
         }
 
-        return $imageURLs;
+        return null;
     }
 
-    public function processImage($image)
+    public function processUpdateImage(Request $request)
     {
-        $validator = Validator::make(['image' => $image], [
-            'image' => 'image|mimes:jpeg,png,jpg',
-        ]);
 
-        if ($validator->fails()) {
-            return ['errors' => $validator->errors()->all()];
+        if ($request->hasFile('media_photo_url')) {
+            $validator = Validator::make($request->all(), [
+                'media_photo_url' => 'image|mimes:jpeg,png,jpg',
+            ]);
+
+            if ($validator->fails()) {
+                return ['errors' => $validator->errors()->all()];
+            }
+
+            $oldImage = public_path($request->image);
+            if (file_exists($oldImage) && !is_null($request->image)) {
+                unlink($oldImage);
+            }
+
+            $image = $request->file('media_photo_url');
+            $imageName = time() . rand(0, 100) . '.' . $image->getClientOriginalExtension();
+            $imagePath = public_path('images/');
+            $image->move($imagePath, $imageName);
+            $imageURL = '/images/' . $imageName;
+
+            return $imageURL;
         }
 
-        $imageName = time() . rand(0, 100) . '.' . $image->getClientOriginalExtension();
-        $imagePath = public_path('images/');
-        $image->move($imagePath, $imageName);
-        $imageURL = '/images/' . $imageName;
-
-        return $imageURL;
+        return null;
     }
 }

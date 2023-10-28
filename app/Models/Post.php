@@ -14,10 +14,11 @@ class Post extends Model
     protected $fillable = [
         'user_id',
         'post_text',
-        'post_date',
         'like_count',
         'comment_count',
         'share_count',
+        'media_photo_url',
+        'media_video_url',
     ];
 
     public function user()

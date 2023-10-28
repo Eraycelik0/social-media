@@ -2,7 +2,6 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Crypt;
-use function Laravel\Prompts\error;
 
 class Security
 {
@@ -43,25 +42,31 @@ class Security
         return $response;
     }
 
-    public static function isImage($file)
+    public static function isImage($FileName)
     {
+
         $response = [
             'status' => 'error',
             'data' => ''
         ];
+        $path_parts = pathinfo($FileName->getClientOriginalName());
+        $validateFile = ['jpeg', 'bmp', 'png', 'jpg','JPEG','BMP','JPG','PNG','img','IMG','svg'];
 
-        $path_parts = $file['extension'];
+        if (in_array($path_parts['extension'], $validateFile)) {
 
-        $validateFile = ['jpeg', 'bmp', 'png', 'jpg', 'JPEG', 'BMP', 'JPG', 'PNG', 'img', 'IMG', 'svg'];
-
-        if (in_array($path_parts, $validateFile)) {
             $response = [
                 'status' => 'ok',
                 'data' => $path_parts
             ];
-        }
 
+        } else {
+            $response = [
+                'status' => 'error',
+                'data' => ''
+            ];
+        }
         return $response;
+
     }
 
     public static function isVideo($FileName)
