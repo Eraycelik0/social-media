@@ -35,7 +35,10 @@ class AuthController extends Controller
         $user->profile_photo_url = $request->input('profile_photo_url');
         $user->save();
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        $token = $user->createToken('login');
+
+
+        return response()->json(['message' => 'User registered successfully', 'user' => $user, 'token' => $token->plainTextToken], 201);
     }
 
     public function login(Request $request)
@@ -47,7 +50,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('login');
 
-            return response()->json(['user' => $user, 'token' => $token])->setStatusCode(200);
+            return response()->json(['user' => $user, 'token' => $token->plainTextToken])->setStatusCode(200);
         } else {
             return response()->json(['errors' => ['Email and password do not match']])->setStatusCode(200);
         }

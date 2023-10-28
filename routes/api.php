@@ -19,14 +19,19 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    // User Post CRUD Operations
+    Route::post('/posts', [PostController::class, 'create'])->name('post.create');
+    Route::post('/post-update', [PostController::class, 'update'])->name('post.update');
+    Route::delete('/post-delete', [PostController::class, 'delete'])->name('post.delete');
+    Route::get('/post-get', [PostController::class, 'getById'])->name('post.get');
 });
 
 
-Route::post('/posts', [PostController::class, 'create'])->name('post.create');
-Route::post('/post-update', [PostController::class, 'update'])->name('post.update');
-Route::delete('/post-delete', [PostController::class, 'delete'])->name('post.delete');
-Route::get('/post-get', [PostController::class, 'getById'])->name('post.get');
+
 
 

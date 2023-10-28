@@ -78,6 +78,6 @@ class PostController extends Controller
             return response()->json(['errors' => ['User not found']], 404);
         }
 
-        return response()->json([], 204);
+        return response()->json(["Post Successfully deleted"], 204);
     }
 }
