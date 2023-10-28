@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('like_count')->default(0);
             $table->integer('comment_count')->default(0);
             $table->integer('share_count')->default(0);
+            $table->json('media_photo_url')->nullable();
+            $table->json('media_video_url')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
