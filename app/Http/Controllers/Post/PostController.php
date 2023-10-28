@@ -63,7 +63,7 @@ class PostController extends Controller
         $user = $this->postService->getById($id);
 
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'User does not have any posts.'], 404);
         }
 
         return response()->json(['user' => $user], 200);
