@@ -17,6 +17,9 @@ class Kernel extends ConsoleKernel
             $helper = new GoogleBookApiHelper();
             $helper->getBooks_v1();
         })->dailyAt('03:00');
+
+        $schedule->command('import:csv')->monthly();
+        $schedule->command('import:movies')->monthly();
     }
 
     /**
