@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/test', function () {
+    $a = new App\Helpers\GoogleBookApi\GoogleBookApiHelper();
+    $a->getBook();
+});
+
+Route::get('/test-v1', function () {
+    $a = new App\Helpers\GoogleBookApi\GoogleBookApiHelper();
+    $a->getBooks_v1();
 });
