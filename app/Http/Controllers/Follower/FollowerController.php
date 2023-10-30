@@ -29,10 +29,12 @@ class FollowerController extends Controller
                 return response()->json(['error' => 'Geçersiz takip edilen kullanıcı.'], 400);
             }
 
+            // Takip işlemi
             $follower = new Follower([
                 'following_id' => $user->id,
                 'followed_id' => $followedId,
                 'follow_date' => now(),
+                'status' => 1, // Takip ediliyor
             ]);
             $follower->save();
 
@@ -59,10 +61,12 @@ class FollowerController extends Controller
                 return response()->json(['error' => 'Geçersiz takip edilen kullanıcı.'], 400);
             }
 
+            // Takip isteği gönderme
             $follower = new Follower([
                 'following_id' => $user->id,
                 'followed_id' => $followedId,
                 'follow_date' => null,
+                'status' => 0, // Takip isteği gönderildi
             ]);
             $follower->save();
 
@@ -83,13 +87,15 @@ class FollowerController extends Controller
 
             $follower = Follower::where('id', $followerId)
                 ->where('followed_id', $user->id)
-                ->where('follow_date', null)
+                ->where('status', 0) // Takip isteği gönderilmiş
                 ->first();
 
             if (!$follower) {
                 return response()->json(['error' => 'Takipçi isteği bulunamadı veya zaten kabul edildi.'], 404);
             }
 
+            // Takipçi isteğini kabul etme
+            $follower->status = 1; // Takip ediliyor
             $follower->follow_date = now();
             $follower->save();
 
@@ -116,6 +122,7 @@ class FollowerController extends Controller
                 return response()->json(['error' => 'Geçersiz takip edilen kullanıcı.'], 400);
             }
 
+            // Takipten çıkarma
             Follower::where('following_id', $user->id)
                 ->where('followed_id', $followedId)
                 ->delete();

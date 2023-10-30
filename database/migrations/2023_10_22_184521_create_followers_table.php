@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('following_id');
             $table->unsignedBigInteger('followed_id');
             $table->dateTime('follow_date');
+            $table->tinyInteger('status')->default(0)->comment('0: Takip isteği gönderildi, 1: Takip ediliyor');
             $table->timestamps();
             $table->softDeletes();
         });

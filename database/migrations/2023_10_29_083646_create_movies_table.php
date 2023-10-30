@@ -15,7 +15,6 @@ return new class extends Migration
                 $table->id();
                 $table->text('genres');
                 $table->string('homepage');
-                $table->integer('id');
                 $table->text('keywords');
                 $table->string('original_language');
                 $table->string('original_title');
