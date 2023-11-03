@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('post_id');
-            $table->dateTime('like_date');
+            $table->foreignId('user_id');
+            $table->foreignId('post_id');
+            $table->timestamps();
             $table->softDeletes();
         });
     }

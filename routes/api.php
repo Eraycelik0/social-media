@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\Follower\FollowerController;
+use App\Http\Controllers\Like\LikeController;
 use App\Http\Controllers\Post\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/follow-request/{followed_id}', [FollowerController::class,'sendFollowRequest']);
     Route::post('/accept-follow-request/{follower_id}', [FollowerController::class,'acceptFollowRequest']);
     Route::delete('/unfollow/{followed_id}', [FollowerController::class, 'unfollowUser']);
+
+    // Comment
+    Route::prefix('/comment')->name('comment.')->group(function (){
+        Route::get('/get',[CommentController::class,'get'])->name('get');
+        Route::get('/getAll',[CommentController::class,'getAll'])->name('getAll');
+        Route::post('/create',[CommentController::class,'create'])->name('create');
+        Route::put('/update',[CommentController::class,'update'])->name('update');
+        Route::delete('/delete',[CommentController::class,'delete'])->name('delete');
+    });
+
+    Route::prefix('/like')->name('like.')->group(function (){
+        Route::get('/get',[LikeController::class,'get'])->name('get');
+        Route::get('/getAll',[LikeController::class,'getAll'])->name('getAll');
+        Route::post('/create',[LikeController::class,'create'])->name('create');
+        Route::delete('/delete',[LikeController::class,'delete'])->name('delete');
+    });
 });
 
 
