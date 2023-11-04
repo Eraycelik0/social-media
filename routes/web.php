@@ -22,3 +22,5 @@ Route::get('/test-v1', function () {
     $a = new App\Helpers\GoogleBookApi\GoogleBookApiHelper();
     $a->getBooks_v1();
 });
+
+Route::get('password/reset', [\App\Http\Controllers\Auth\ForgotPasswordController::class,'showLinkRequestForm'])->name('password.reset');
