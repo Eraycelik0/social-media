@@ -7,17 +7,14 @@ use App\Repositories\Post\PostRepository;
 class PostService
 {
     protected $postRepository;
-
     public function __construct(PostRepository $postRepository)
     {
         $this->postRepository = $postRepository;
     }
-
     public function create(array $data)
     {
         return $this->postRepository->create($data);
     }
-
     public function update($id, array $data)
     {
         $data['id'] = $id;
@@ -29,7 +26,6 @@ class PostService
 
         return $this->postRepository->update($signIn, $data);
     }
-
     public function delete($id): bool
     {
         $signIn = $this->postRepository->getById($id);
@@ -42,16 +38,20 @@ class PostService
 
         return true;
     }
-
-
     public function getById($id)
     {
         return $this->postRepository->getById($id);
     }
-
-
     public function getAll()
     {
         return $this->postRepository->getAll();
+    }
+    public function getPostsByUserId($user_id)
+    {
+        return $this->postRepository->getPostsByUserId($user_id);
+    }
+    public function getTotalPostsCountByUserId($user_id)
+    {
+        return $this->postRepository->getTotalPostsCountByUserId($user_id);
     }
 }

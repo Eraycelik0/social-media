@@ -35,6 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/post-update', [PostController::class, 'update'])->name('post.update');
     Route::delete('/post-delete', [PostController::class, 'delete'])->name('post.delete');
     Route::get('/post-get', [PostController::class, 'getById'])->name('post.get');
+    Route::post('/user/posts', [PostController::class, 'getPostsByUserId'])->name('user.posts');
+
     // User follower CRUD Operations
     Route::post('/follow/{followed_id}', [FollowerController::class, 'followUser']);
     Route::post('/follow-request/{followed_id}', [FollowerController::class,'sendFollowRequest']);

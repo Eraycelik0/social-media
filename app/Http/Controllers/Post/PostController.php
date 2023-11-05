@@ -13,71 +13,91 @@ class PostController extends Controller
     protected $postService;
     protected $imageService;
     protected $videoService;
-
     public function __construct(PostService $postService, ImagesService $imageService, VideoService $videoService)
     {
         $this->postService = $postService;
         $this->imageService = $imageService;
         $this->videoService = $videoService;
     }
-
     public function create(Request $request)
     {
-        $data = $request->all();
+        try {
+            $data = $request->all();
 
-        $data['media_photo_url'] = $this->imageService->processImage($request);
-        $data['media_video_url'] = $this->videoService->processVideo($request);
+            $data['media_photo_url'] = $this->imageService->processImage($request);
+            $data['media_video_url'] = $this->videoService->processVideo($request);
 
-        $result = $this->postService->create($data);
+            $result = $this->postService->create($data);
 
-        if (isset($result['errors'])) {
-            return response()->json(['errors' => $result['errors']], 400);
+            return response()->json(['user' => $result], 201);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 400);
         }
-
-        return response()->json(['user' => $result], 201);
     }
-
     public function update(Request $request)
     {
-        $data = $request->all();
-        $id = $request->input('user_id');
-        $data['media_photo_url'] = $this->imageService->processUpdateImage($request);
-        $data['media_video_url'] = $this->videoService->processUpdateVideo($request);
+        try {
+            $data = $request->all();
+            $id = $request->input('id');
+            $data['media_photo_url'] = $this->imageService->processUpdateImage($request);
+            $data['media_video_url'] = $this->videoService->processUpdateVideo($request);
 
-        $result = $this->postService->update($id, $data);
+            $result = $this->postService->update($id, $data);
 
-        if (isset($result['errors'])) {
-            return response()->json(['errors' => $result['errors']], 400);
+            return response()->json(['user' => $result], 200);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 400);
         }
-
-        if (isset($result['errors']) && in_array('User not found', $result['errors'])) {
-            return response()->json(['errors' => $result['errors']], 404);
-        }
-
-        return response()->json(['user' => $result], 200);
     }
-
     public function getById(Request $request)
     {
-        $id = $request->input('id');
-        $user = $this->postService->getById($id);
+        try {
+            $id = $request->input('id');
+            $user = $this->postService->getById($id);
 
-        if (!$user) {
-            return response()->json(['error' => 'User does not have any posts.'], 404);
+            if (!$user) {
+                return response()->json(['error' => 'User does not have any posts.'], 404);
+            }
+
+            return response()->json(['user' => $user], 200);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 400);
         }
-
-        return response()->json(['user' => $user], 200);
     }
-
     public function delete(Request $request)
     {
-        $id = $request->input('id');
-        $result = $this->postService->delete($id);
+        try {
+            $id = $request->input('id');
+            $result = $this->postService->delete($id);
 
-        if (!$result) {
-            return response()->json(['errors' => ['User not found']], 404);
+            if (!$result) {
+                return response()->json(['errors' => ['Post not found']], 404);
+            }
+
+            return response()->json(["Post Successfully deleted"], 204);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 400);
         }
+    }
+    public function getPostsByUserId(Request $request)
+    {
+        try {
+            $user_id = $request->input('user_id');
+            $posts = $this->postService->getPostsByUserId($user_id);
+            $totalRecords = $this->postService->getTotalPostsCountByUserId($user_id);
 
-        return response()->json(["Post Successfully deleted"], 204);
+            if (!$posts) {
+                return response()->json(['message' => 'No posts found for this user.'], 404);
+            }
+
+            $results = [
+                'total_records' => $totalRecords,
+                'posts' => $posts,
+            ];
+
+            return response()->json(["data" => $results], 200);
+        } catch (\Exception $e) {
+            return response()->json(['errors' => $e->getMessage()], 400);
+        }
     }
 }

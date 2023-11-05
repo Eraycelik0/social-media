@@ -41,8 +41,8 @@ class VideoService
                 return ['errors' => $validator->errors()->all()];
             }
 
-            $oldVideo = public_path($request->video);
-            if (file_exists($oldVideo) && !is_null($request->video)) {
+            $oldVideo = public_path($request->file('media_video_url'));
+            if (file_exists($oldVideo) && !is_null($request->file('media_video_url'))) {
                 unlink($oldVideo);
             }
 

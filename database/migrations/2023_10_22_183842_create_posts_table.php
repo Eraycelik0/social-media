@@ -22,6 +22,8 @@ return new class extends Migration
             $table->json('media_video_url')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

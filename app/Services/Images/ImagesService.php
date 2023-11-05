@@ -42,8 +42,8 @@ class ImagesService
                 return ['errors' => $validator->errors()->all()];
             }
 
-            $oldImage = public_path($request->image);
-            if (file_exists($oldImage) && !is_null($request->image)) {
+            $oldImage = public_path($request->file('media_photo_url'));
+            if (file_exists($oldImage) && !is_null($request->file('media_photo_url'))) {
                 unlink($oldImage);
             }
 
