@@ -1,0 +1,45 @@
+version: '3.7'
+services:
+
+    mysql:
+        image: mysql:latest
+        container_name: mysql
+        platform: linux/x86_64
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./mysql:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: test
+            MYSQL_DATABASE: social-media
+            MYSQL_USER: test
+            MYSQL_PASSWORD: test
+        networks:
+            - laravel-app-network
+
+    laravel-app:
+        build:
+            context: ./docker/php
+        container_name: social-media
+        volumes:
+            - ./laravel/:/home/source/main
+        working_dir: /home/source/main
+        depends_on:
+            - mysql
+        networks:
+            - laravel-app-network
+    nginx:
+        build:
+            context: ./docker/nginx
+        container_name: todo-nginx
+        ports:
+            - "8000:80"
+        depends_on:
+            - laravel-app
+        volumes:
+            - ./laravel/:/home/source/main
+        networks:
+            - laravel-app-network
+
+networks:
+    laravel-app-network:
