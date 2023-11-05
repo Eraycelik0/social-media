@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('media_url');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('user_id')->references('id')->on('posts')->onDelete('cascade');
+
         });
     }
 

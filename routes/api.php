@@ -31,17 +31,21 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     // User Post CRUD Operations
-    Route::post('/posts', [PostController::class, 'create'])->name('post.create');
-    Route::post('/post-update', [PostController::class, 'update'])->name('post.update');
-    Route::delete('/post-delete', [PostController::class, 'delete'])->name('post.delete');
-    Route::get('/post-get', [PostController::class, 'getById'])->name('post.get');
-    Route::post('/user/posts', [PostController::class, 'getPostsByUserId'])->name('user.posts');
+    Route::prefix('/posts')->group(function () {
+        Route::post('/create', [PostController::class, 'create'])->name('post.create');
+        Route::post('/update', [PostController::class, 'update'])->name('post.update');
+        Route::delete('/delete', [PostController::class, 'delete'])->name('post.delete');
+        Route::get('/get', [PostController::class, 'getById'])->name('post.get');
+        Route::post('/user', [PostController::class, 'getPostsByUserId'])->name('user.posts');
+    });
 
     // User follower CRUD Operations
-    Route::post('/follow/{followed_id}', [FollowerController::class, 'followUser']);
-    Route::post('/follow-request/{followed_id}', [FollowerController::class,'sendFollowRequest']);
-    Route::post('/accept-follow-request/{follower_id}', [FollowerController::class,'acceptFollowRequest']);
-    Route::delete('/unfollow/{followed_id}', [FollowerController::class, 'unfollowUser']);
+    Route::prefix('/follow')->group(function () {
+        Route::post('/{followed_id}', [FollowerController::class, 'followUser']);
+        Route::post('/follow-request/{followed_id}', [FollowerController::class,'sendFollowRequest']);
+        Route::post('/accept-follow-request/{follower_id}', [FollowerController::class,'acceptFollowRequest']);
+        Route::delete('s', [FollowerController::class, 'unfollowUser']);
+    });
 
     // Comment
     Route::prefix('/comment')->name('comment.')->group(function (){

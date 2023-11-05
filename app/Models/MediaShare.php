@@ -15,7 +15,6 @@ class MediaShare extends Model
         'user_id',
         'media_type',
         'media_url',
-        'share_date',
     ];
 
     public function user()

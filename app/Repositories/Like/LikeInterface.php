@@ -7,8 +7,8 @@ use App\Models\Like;
 interface LikeInterface
 {
     public function create(array $data): Like;
-    public function update(Like $post, array $data): Like;
-    public function delete(Like $post): bool;
+    public function update(Like $like, array $data): Like;
+    public function delete(Like $like): bool;
     public function getById($id): ?Like;
     public function getAll();
 }

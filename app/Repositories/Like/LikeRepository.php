@@ -3,28 +3,28 @@
 namespace App\Repositories\Like;
 
 use App\Models\Like;
-use App\Models\Post;
 
 class LikeRepository implements LikeInterface
 {
-
     public function create(array $data): Like
     {
         return Like::create($data);
     }
-
     public function delete(Like $like): bool
     {
         return $like->delete();
     }
-
     public function getById($id): ?Like
     {
-        return Like::findOrFail($id);
+        return Like::find($id);
     }
-
     public function getAll()
     {
         return Like::all();
+    }
+    public function update(Like $like, array $data): Like
+    {
+        $like->update($data);
+        return $like;
     }
 }

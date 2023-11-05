@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-
     protected $likeService;
 
     public function __construct(LikeService $likeService)
@@ -16,23 +15,32 @@ class LikeController extends Controller
         $this->likeService = $likeService;
     }
 
-    public function getAll(){
+    public function getAll()
+    {
         return $this->likeService->getAll();
     }
 
-    public function get(Request $request){
+    public function get(Request $request)
+    {
         return $this->likeService->get($request);
     }
 
-    public function create(Request $request){
-        return $this->likeService->create($request);
+    public function create(Request $request)
+    {
+        $result = $this->likeService->create($request);
+
+        return response()->json($result);
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         return $this->likeService->update($request);
     }
 
-    public function delete(Request $request){
-        return $this->likeService->delete($request);
+    public function delete(Request $request)
+    {
+        $result = $this->likeService->delete($request);
+
+        return response()->json($result);
     }
 }

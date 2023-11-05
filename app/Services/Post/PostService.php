@@ -54,4 +54,22 @@ class PostService
     {
         return $this->postRepository->getTotalPostsCountByUserId($user_id);
     }
+    public function incrementLikeCount($postId)
+    {
+        $post = $this->postRepository->getById($postId);
+
+        if ($post) {
+            $post->like_count += 1;
+            $post->save();
+        }
+    }
+    public function decrementLikeCount($postId)
+    {
+        $post = $this->postRepository->getById($postId);
+
+        if ($post && $post->like_count > 0) {
+            $post->like_count -= 1;
+            $post->save();
+        }
+    }
 }
