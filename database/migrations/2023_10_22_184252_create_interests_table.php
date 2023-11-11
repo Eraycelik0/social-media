@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('interest_name');
             $table->text('description')->nullable();
+            
             $table->timestamps();
             $table->softDeletes();
         });

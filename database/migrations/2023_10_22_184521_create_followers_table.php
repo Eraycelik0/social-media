@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('followers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('following_id');
-            $table->unsignedBigInteger('followed_id');
-            $table->dateTime('follow_date');
             $table->tinyInteger('status')->default(0)->comment('0: Takip isteği gönderildi, 1: Takip ediliyor');
+
+            $table->foreignId('from')->constrainted('users')->onDelete('cascade');
+            $table->foreignId('to')->constrainted('users')->onDelete('cascade');
+
             $table->timestamps();
             $table->softDeletes();
         });

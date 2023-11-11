@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('recommendation_data', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('interest_id');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('interest_id')->constrained()->cascadeOnDelete();
+
             $table->string('content_type');
-            $table->unsignedBigInteger('content_id');
-            $table->dateTime('recommendation_date');
             $table->timestamps();
             $table->softDeletes();
         });

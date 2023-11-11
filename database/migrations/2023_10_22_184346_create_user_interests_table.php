@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('user_interests', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('interest_id');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('interest_id')->constrained()->cascadeOnDelete();
+
             $table->timestamps();
             $table->softDeletes();
         });
