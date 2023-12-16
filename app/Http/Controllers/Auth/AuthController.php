@@ -17,6 +17,8 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'username' => 'required',
             'email' => 'required|email|unique:users',
+            'first_name'=>'required',
+            'last_name'=>'required',
             'password' => 'required|min:6',
             'date_of_birth' => 'required|date',
             'gender' => 'required|in:Male,Female,Other',
@@ -31,6 +33,8 @@ class AuthController extends Controller
         $user->username = $request->input('username');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
+        $user->first_name = $request->input('first_name');
+        $user->last_name = $request->input('last_name');
         $user->date_of_birth = $request->input('date_of_birth');
         $user->gender = $request->input('gender');
         $user->profile_photo_url = $request->input('profile_photo_url');

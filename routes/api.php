@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\Follower\FollowerController;
 use App\Http\Controllers\Like\LikeController;
+use App\Http\Controllers\Message\MessageController;
 use App\Http\Controllers\Post\PostController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
@@ -34,9 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // User CRUD Operations
     Route::prefix('/users')->group(function () {
         Route::get('/',[UserController::class,'getAll'])->name('users.getAll');
-        Route::get('/get', [UserController::class, 'get'])->name('users.get');
+        Route::get('/get/{id}', [UserController::class, 'get'])->name('users.get');
         Route::post('/update', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/delete', [UserController::class, 'delete'])->name('users.delete');
+        Route::delete('/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
     });
 
     // User Post CRUD Operations
@@ -46,6 +47,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/delete', [PostController::class, 'delete'])->name('post.delete');
         Route::get('/get', [PostController::class, 'getById'])->name('post.get');
         Route::post('/user', [PostController::class, 'getPostsByUserId'])->name('user.posts');
+    });
+
+    // Messages CRUD Operations
+    Route::prefix('/messages')->group(function () {
+        Route::get('/getList/{id}',[MessageController::class,'getList']);
+        Route::get('/{from}/{to}/getAll', [MessageController::class,'get']);
+        Route::post('/create', [MessageController::class, 'create']);
     });
 
     // User follower CRUD Operations

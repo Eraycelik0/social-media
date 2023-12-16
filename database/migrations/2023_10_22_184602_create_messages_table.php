@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sender_id');
-            $table->unsignedBigInteger('receiver_id');
-            $table->text('message_text');
-            $table->dateTime('message_date');
-            $table->boolean('read_status')->default(false);
+            $table->unsignedBigInteger('from');
+            $table->unsignedBigInteger('to');
+            $table->text('text');
+            $table->boolean('seen')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -17,9 +17,17 @@ class UserService
         return $this->userRepository->getAll();
     }
 
-    public function get($request)
+    public function get($id)
     {
-        return $this->userRepository->getById($request->id);
+        $isUserExists = $this->userRepository->getById($id);
+
+        if (!$isUserExists) {
+            return response('Kullanıcı Bulunamadı!',404);
+        }
+
+        $this->userRepository->delete($isUserExists);
+
+        return $isUserExists;
     }
 
     public function update($id, array $data)
@@ -33,9 +41,9 @@ class UserService
         return $this->userRepository->update($isUserExists, $data);
     }
 
-    public function delete($request): bool
+    public function delete($id): bool
     {
-        $isUserExists = $this->userRepository->getById($request->id);
+        $isUserExists = $this->userRepository->getById($id);
 
         if (!$isUserExists) {
             return false;

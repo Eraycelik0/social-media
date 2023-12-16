@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\User\UserService;
 use Illuminate\Http\Request;
 
@@ -19,15 +20,15 @@ class UserController extends Controller
         return $this->userService->getAll();
     }
 
-    public function get(Request $request){
-        return $this->userService->get($request);
+    public function get($id){
+        return $this->userService->get($id);
     }
 
     public function update(Request $request){
         return $this->userService->update($request->id,$request->except('id'));
     }
 
-    public function delete(Request $request){
-        return $this->userService->delete($request);
+    public function delete($id){
+        return $this->userService->delete($id);
     }
 }
