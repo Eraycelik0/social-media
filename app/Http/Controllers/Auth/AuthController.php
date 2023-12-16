@@ -53,7 +53,7 @@ class AuthController extends Controller
 
             return response()->json(['user' => $user, 'token' => $token->plainTextToken])->setStatusCode(200);
         } else {
-            return response()->json(['errors' => ['Email and password do not match']])->setStatusCode(200);
+            return response()->json(['errors' => ['Email and password do not match']])->setStatusCode(401);
         }
     }
 
