@@ -5,6 +5,7 @@ use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\Follower\FollowerController;
 use App\Http\Controllers\Like\LikeController;
 use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    // User CRUD Operations
+    Route::prefix('/users')->group(function () {
+        Route::get('/',[UserController::class,'getAll'])->name('users.getAll');
+        Route::get('/get', [UserController::class, 'get'])->name('users.get');
+        Route::post('/update', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/delete', [UserController::class, 'delete'])->name('users.delete');
+    });
+
     // User Post CRUD Operations
     Route::prefix('/posts')->group(function () {
         Route::post('/create', [PostController::class, 'create'])->name('post.create');

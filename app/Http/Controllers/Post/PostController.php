@@ -24,8 +24,13 @@ class PostController extends Controller
         try {
             $data = $request->all();
 
-            $data['media_photo_url'] = $this->imageService->processImage($request);
-            $data['media_video_url'] = $this->videoService->processVideo($request);
+//            if($data['media_photo_url'] != null){
+//                $data['media_photo_url'] = $this->imageService->processImage($request);
+//            }
+//
+//            if($data['media_video_url'] != null){
+//                $data['media_video_url'] = $this->videoService->processVideo($request);
+//            }
 
             $result = $this->postService->create($data);
 
