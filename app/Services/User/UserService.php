@@ -3,6 +3,7 @@
 namespace App\Services\User;
 
 use App\Repositories\User\UserRepository;
+use Illuminate\Support\Facades\Validator;
 
 class UserService
 {
@@ -25,8 +26,6 @@ class UserService
             return response('Kullanıcı Bulunamadı!',404);
         }
 
-        $this->userRepository->delete($isUserExists);
-
         return $isUserExists;
     }
 
@@ -36,6 +35,17 @@ class UserService
 
         if (! $isUserExists) {
             return ['errors' => ['User not found']];
+        }
+
+        $validate = Validator::make($data,[
+            'first_name'=>'required',
+            'last_name'=>'required',
+            'title'=>'',
+            'description'=>'',
+        ]);
+
+        if($validate->fails()){
+            return response($validate->errors(),400);
         }
 
         return $this->userRepository->update($isUserExists, $data);

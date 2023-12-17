@@ -22,7 +22,6 @@ class MessageRepository implements MessageInterface
             ->where('to',$request['to'])
             ->get();
 
-        dd($result);
         return $result;
     }
 
