@@ -21,8 +21,8 @@ class FollowerController extends Controller
                 return response()->json(['error' => 'Kullanıcı oturumu açmamış.'], 401);
             }
 
-            $validator = Validator::make(['followed_id' => $followedId], [
-                'followed_id' => 'required|numeric|exists:users,id',
+            $validator = Validator::make(['to' => $followedId], [
+                'to' => 'required|numeric|exists:users,id',
             ]);
 
             if ($validator->fails()) {
@@ -31,9 +31,8 @@ class FollowerController extends Controller
 
             // Takip işlemi
             $follower = new Follower([
-                'following_id' => $user->id,
-                'followed_id' => $followedId,
-                'follow_date' => now(),
+                'from' => $user->id,
+                'to' => $followedId,
                 'status' => 1, // Takip ediliyor
             ]);
             $follower->save();
@@ -44,7 +43,7 @@ class FollowerController extends Controller
         }
     }
 
-    public function sendFollowRequest($followedId)
+    public function sendFollowRequest($to)
     {
         try {
             $user = Auth::user();
@@ -53,8 +52,8 @@ class FollowerController extends Controller
                 return response()->json(['error' => 'Kullanıcı oturumu açmamış.'], 401);
             }
 
-            $validator = Validator::make(['followed_id' => $followedId], [
-                'followed_id' => 'required|numeric|exists:users,id',
+            $validator = Validator::make(['to' => $to], [
+                'to' => 'required|numeric|exists:users,id',
             ]);
 
             if ($validator->fails()) {
@@ -63,11 +62,11 @@ class FollowerController extends Controller
 
             // Takip isteği gönderme
             $follower = new Follower([
-                'following_id' => $user->id,
-                'followed_id' => $followedId,
-                'follow_date' => null,
+                'from' => $user->id,
+                'to' => $to,
                 'status' => 0, // Takip isteği gönderildi
             ]);
+
             $follower->save();
 
             return response()->json(['message' => 'Takip isteği gönderildi.']);
@@ -76,7 +75,7 @@ class FollowerController extends Controller
         }
     }
 
-    public function acceptFollowRequest($followerId)
+    public function acceptFollowRequest($from)
     {
         try {
             $user = Auth::user();
@@ -85,8 +84,8 @@ class FollowerController extends Controller
                 return response()->json(['error' => 'Kullanıcı oturumu açmamış.'], 401);
             }
 
-            $follower = Follower::where('id', $followerId)
-                ->where('followed_id', $user->id)
+            $follower = Follower::where('from', $from)
+                ->where('to',$user->id)
                 ->where('status', 0) // Takip isteği gönderilmiş
                 ->first();
 
@@ -96,7 +95,6 @@ class FollowerController extends Controller
 
             // Takipçi isteğini kabul etme
             $follower->status = 1; // Takip ediliyor
-            $follower->follow_date = now();
             $follower->save();
 
             return response()->json(['message' => 'Takipçi isteği kabul edildi.']);
@@ -105,7 +103,7 @@ class FollowerController extends Controller
         }
     }
 
-    public function unfollowUser($followedId)
+    public function unfollowUser($to)
     {
         try {
             $user = Auth::user();
@@ -114,8 +112,8 @@ class FollowerController extends Controller
                 return response()->json(['error' => 'Kullanıcı oturumu açmamış.'], 401);
             }
 
-            $validator = Validator::make(['followed_id' => $followedId], [
-                'followed_id' => 'required|numeric|exists:users,id',
+            $validator = Validator::make(['to' => $to], [
+                'to' => 'required|numeric|exists:users,id',
             ]);
 
             if ($validator->fails()) {
@@ -123,8 +121,12 @@ class FollowerController extends Controller
             }
 
             // Takipten çıkarma
-            Follower::where('following_id', $user->id)
-                ->where('followed_id', $followedId)
+            Follower::where('from', $user->id)
+                ->where('to', $to)
+                ->delete();
+
+            Follower::where('from', $to)
+                ->where('to', $user->id)
                 ->delete();
 
             return response()->json(['message' => 'Kullanıcıyı takipten çıkardınız.']);

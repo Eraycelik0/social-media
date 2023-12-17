@@ -12,9 +12,9 @@ class Follower extends Model
 
     protected $table = 'followers';
     protected $fillable = [
-        'following_id',
-        'followed_id',
-        'follow_date',
+        'from',
+        'to',
+        'status',
     ];
 
     public function followerUser()

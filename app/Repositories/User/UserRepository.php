@@ -13,7 +13,10 @@ class UserRepository implements UserInterface
     }
     public function update(User $user, array $data): User
     {
-        $data['date_of_birth'] = (new DateTime($data['date_of_birth']))->format('Y-m-d');
+        if($data['date_of_birth'] !== null){
+            $data['date_of_birth'] = (new DateTime($data['date_of_birth']))->format('Y-m-d');
+        }
+
         $user->update($data);
         return $user;
     }

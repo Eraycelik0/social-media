@@ -21,7 +21,7 @@ class AuthController extends Controller
             'first_name'=>'required',
             'last_name'=>'required',
             'password' => 'required|min:6',
-            'date_of_birth' => 'required|date|date_format:d.m.Y',
+            'date_of_birth' => 'required|date|date_format:Y-m-d',
             'gender' => 'required|in:Male,Female,Other',
             'profile_photo_url' => 'url',
         ]);
