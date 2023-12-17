@@ -30,8 +30,6 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $date =
-
         $user = new User();
         $user->username = $request->input('username');
         $user->email = $request->input('email');
