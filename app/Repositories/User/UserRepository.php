@@ -3,6 +3,7 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
+use DateTime;
 
 class UserRepository implements UserInterface
 {
@@ -12,6 +13,7 @@ class UserRepository implements UserInterface
     }
     public function update(User $user, array $data): User
     {
+        $data['date_of_birth'] = (new DateTime($data['date_of_birth']))->format('Y-m-d');
         $user->update($data);
         return $user;
     }

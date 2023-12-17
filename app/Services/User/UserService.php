@@ -40,8 +40,10 @@ class UserService
         $validate = Validator::make($data,[
             'first_name'=>'required',
             'last_name'=>'required',
-            'title'=>'',
+            'username'=>'required|unique:users',
             'description'=>'',
+            'date_of_birth'=>'date|date_format:d.m.Y',
+            'title'=>'',
         ]);
 
         if($validate->fails()){

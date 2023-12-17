@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,12 +16,12 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => 'required',
+            'username' => 'required|unique:users',
             'email' => 'required|email|unique:users',
             'first_name'=>'required',
             'last_name'=>'required',
             'password' => 'required|min:6',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'required|date|date_format:d.m.Y',
             'gender' => 'required|in:Male,Female,Other',
             'profile_photo_url' => 'url',
         ]);
@@ -29,13 +30,15 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
+        $date =
+
         $user = new User();
         $user->username = $request->input('username');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
         $user->first_name = $request->input('first_name');
         $user->last_name = $request->input('last_name');
-        $user->date_of_birth = $request->input('date_of_birth');
+        $user->date_of_birth = (new DateTime($request->date_of_birth))->format('Y-m-d');
         $user->gender = $request->input('gender');
         $user->profile_photo_url = $request->input('profile_photo_url');
         $user->save();
