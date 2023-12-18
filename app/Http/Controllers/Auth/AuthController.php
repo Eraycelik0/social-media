@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -38,11 +39,10 @@ class AuthController extends Controller
         $user->last_name = $request->input('last_name');
         $user->date_of_birth = (new DateTime($request->date_of_birth))->format('Y-m-d');
         $user->gender = $request->input('gender');
-        $user->profile_photo_url = $request->input('profile_photo_url');
+        $user->profile_photo_url = Storage::url($request->file('profile_photo')->store('public/profile-photo'));
         $user->save();
 
         $token = $user->createToken('login');
-
 
         return response()->json(['message' => 'User registered successfully', 'user' => $user, 'token' => $token->plainTextToken], 201);
     }

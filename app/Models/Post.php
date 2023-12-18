@@ -17,7 +17,8 @@ class Post extends Model
         'like_count',
         'comment_count',
         'share_count',
-        'pinned_post_id'
+        'pinned_post_id',
+        'media_share'
     ];
 
     public function user()

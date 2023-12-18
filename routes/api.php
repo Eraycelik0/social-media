@@ -6,6 +6,7 @@ use App\Http\Controllers\Follower\FollowerController;
 use App\Http\Controllers\Like\LikeController;
 use App\Http\Controllers\Message\MessageController;
 use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,16 +23,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 // User Auth
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/send-password-reset-link',  [AuthController::class, 'sendPasswordResetLink'] );
-Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::prefix('/auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/send-password-reset-link',  [AuthController::class, 'sendPasswordResetLink'] );
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+});
+
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
+
+    Route::prefix('/profile')->group(function () {
+        Route::get('/detail', [ProfileController::class, 'detail']);
+        Route::post('/update', [ProfileController::class, 'update']);
     });
+
     // User CRUD Operations
     Route::prefix('/users')->group(function () {
         Route::get('/',[UserController::class,'getAll'])->name('users.getAll');
