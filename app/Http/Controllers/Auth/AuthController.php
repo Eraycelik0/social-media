@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Media\MediaService;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Storage;
+
+use function PHPUnit\Framework\isNull;
 
 class AuthController extends Controller
 {
@@ -24,7 +26,7 @@ class AuthController extends Controller
             'password' => 'required|min:6',
             'date_of_birth' => 'required|date|date_format:Y-m-d',
             'gender' => 'required|in:Male,Female,Other',
-            'profile_photo_url' => 'url',
+            'profile_photo_url' => 'file|mimes:jpg,jpeg,png',
         ]);
 
         if ($validator->fails()) {
@@ -32,6 +34,7 @@ class AuthController extends Controller
         }
 
         $user = new User();
+
         $user->username = $request->input('username');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
@@ -39,8 +42,14 @@ class AuthController extends Controller
         $user->last_name = $request->input('last_name');
         $user->date_of_birth = (new DateTime($request->date_of_birth))->format('Y-m-d');
         $user->gender = $request->input('gender');
-        $user->profile_photo_url = Storage::url($request->file('profile_photo')->store('public/profile-photo'));
-        $user->save();
+        if($request->has('profile_photo')) {
+            $image = MediaService::processImage($request->file('profile_photo'));
+            if (!isNull($image)) {
+                $user->profile_photo_url = $image;
+            } else {
+                return response()->json(['status' => false, 'message' => 'Invalid profile photo'], 400);
+            }
+        } $user->save();
 
         $token = $user->createToken('login');
 

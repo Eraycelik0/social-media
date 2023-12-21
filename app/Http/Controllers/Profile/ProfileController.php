@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Services\Media\MediaService;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+
+use function PHPUnit\Framework\isNull;
 
 class ProfileController extends Controller {
 
@@ -22,7 +25,7 @@ class ProfileController extends Controller {
             'email' => 'email|unique:users',
             'date_of_birth' => 'date|date_format:Y-m-d',
             'gender' => 'in:Male,Female,Other',
-            'profile_photo_url' => 'url',
+            'profile_photo_url' => 'file|mimes:jpg,jpeg,png',
         ]);
 
         if ($validator->fails()) {
@@ -37,9 +40,14 @@ class ProfileController extends Controller {
         if($request->has('last_name')) $user->last_name = $request->input('last_name');
         if($request->has('date_of_birth')) $user->date_of_birth = (new DateTime($request->date_of_birth))->format('Y-m-d');
         if($request->has('gender')) $user->gender = $request->input('gender');
-        if($request->has('profile_photo')) $user->profile_photo_url = Storage::url($request->file('profile_photo')->store('public/profile-photo'));
-
-        $user->save();
+        if($request->has('profile_photo')) {
+            $image = MediaService::processImage($request->file('profile_photo'));
+            if (!isNull($image)) {
+                $user->profile_photo_url = $image;
+            } else {
+                return response()->json(['status' => false, 'message' => 'Invalid profile photo'], 400);
+            }
+        } $user->save();
 
         return response()->json(['message' => 'Profile Updated', 'data' => $user], 201);
     }

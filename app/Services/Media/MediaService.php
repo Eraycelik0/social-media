@@ -11,6 +11,12 @@ class MediaService {
         } else return null;
     }
 
+    public static function processImage($file) {
+        if (in_array(strtolower($file->getClientOriginalExtension()), ['jpg', 'jpeg', 'png'])) {
+            return Storage::url($file->store('public/media'));
+        } else return null;
+    }
+
     public function deleteFile($file) {
         return Storage::delete($file);
     }
