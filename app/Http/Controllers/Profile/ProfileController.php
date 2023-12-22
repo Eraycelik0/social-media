@@ -25,7 +25,7 @@ class ProfileController extends Controller {
             'email' => 'email|unique:users',
             'date_of_birth' => 'date|date_format:Y-m-d',
             'gender' => 'in:Male,Female,Other',
-            'profile_photo_url' => 'file|mimes:jpg,jpeg,png',
+            'profile_photo' => 'file',
         ]);
 
         if ($validator->fails()) {

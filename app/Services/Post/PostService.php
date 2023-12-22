@@ -20,28 +20,28 @@ class PostService
     }
 
     public function update(array $data) {
-        $check = $this->postRepository->getById($data['post_id']);
+        $check = $this->postRepository->check($data['post_id']);
         return $this->postRepository->update($check, $data);
     }
     public function delete($id): bool {
-        $check = $this->postRepository->getById($id);
+        $check = $this->postRepository->check($id);
         if ($check) {
             return  $this->postRepository->delete($check);
         } else {
             return false;
         }
     }
-    public function getById($id)
+    public function getBy($id)
     {
-        return $this->postRepository->getById($id);
+        return $this->postRepository->getBy($id);
     }
     public function getAll()
     {
         return $this->postRepository->getAll();
     }
-    public function getPostsByUserId($user_id)
+    public function getPostsByUser()
     {
-        return $this->postRepository->getPostsByUserId($user_id);
+        return $this->postRepository->getPostsByUser();
     }
     public function getTotalPostsCountByUserId($user_id)
     {

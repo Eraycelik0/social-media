@@ -14,7 +14,7 @@ class MediaService {
     public static function processImage($file) {
         if (in_array(strtolower($file->getClientOriginalExtension()), ['jpg', 'jpeg', 'png'])) {
             return Storage::url($file->store('public/media'));
-        } else return null;
+        } else return false;
     }
 
     public function deleteFile($file) {

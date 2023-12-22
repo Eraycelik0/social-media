@@ -9,6 +9,6 @@ interface UserInterface
     public function create(array $data): User;
     public function update(User $user, array $data): User;
     public function delete(User $user): bool;
-    public function getById($id): ?User;
+    public function getBy($username): ?User;
     public function getAll();
 }

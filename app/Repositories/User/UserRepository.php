@@ -24,9 +24,9 @@ class UserRepository implements UserInterface
     {
         return $user->delete();
     }
-    public function getById($id): ?User
+    public function getBy($username): ?User
     {
-        return User::find($id);
+        return User::where('username', $username)->first();
     }
     public function getAll()
     {

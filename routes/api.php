@@ -43,17 +43,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('/users')->group(function () {
         Route::get('/',[UserController::class,'getAll'])->name('users.getAll');
         Route::get('/get/{id}', [UserController::class, 'get'])->name('users.get');
-        Route::post('/update', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/delete/{id}', [UserController::class, 'delete'])->name('users.delete');
     });
 
     // User Post CRUD Operations
     Route::prefix('/posts')->group(function () {
         Route::post('/create', [PostController::class, 'create'])->name('post.create');
         Route::post('/update', [PostController::class, 'update'])->name('post.update');
-        Route::delete('/delete', [PostController::class, 'delete'])->name('post.delete');
-        Route::get('/get', [PostController::class, 'getById'])->name('post.get');
-        Route::post('/user', [PostController::class, 'getPostsByUserId'])->name('user.posts');
+        Route::delete('/{uuid}/delete', [PostController::class, 'delete'])->name('post.delete');
+        Route::get('/{uuid}', [PostController::class, 'getBy'])->name('post.get');
+        Route::post('/user', [PostController::class, 'getPostsByUser'])->name('user.posts');
     });
 
     // Messages CRUD Operations

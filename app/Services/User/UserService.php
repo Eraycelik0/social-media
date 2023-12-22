@@ -20,50 +20,23 @@ class UserService
         return $this->userRepository->getAll();
     }
 
-    public function get($id)
+    public function get($username)
     {
-        $isUserExists = $this->userRepository->getById($id);
+        $isUserExists = $this->userRepository->getBy($username);
 
         if (!$isUserExists) {
-            return response('Kullanıcı Bulunamadı!',404);
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
         }
 
         return $isUserExists;
     }
 
-    public function update($id, array $data)
+    public function delete($username): bool
     {
-        $isUserExists = $this->userRepository->getById($id);
-
-        if (! $isUserExists) {
-            return ['errors' => ['User not found']];
-        }
-
-        $validate = Validator::make($data,[
-            'first_name'=>'required',
-            'last_name'=>'required',
-            'username'=>'required',
-            'description'=>'',
-            'date_of_birth'=>'date|date_format:Y-m-d',
-            'title'=>'',
-        ]);
-
-        if($validate->fails()){
-            return response($validate->errors(),400);
-        }
-
-        $isUsernameExists = DB::table('users')->where('username',$data['username'])->first();
-
-        if ($isUsernameExists && ($isUsernameExists->id !== $id)) {
-            return response('Başka bir kullanıcı tarafından alınmış.',400);
-        }
-
-        return $this->userRepository->update($isUserExists, $data);
-    }
-
-    public function delete($id): bool
-    {
-        $isUserExists = $this->userRepository->getById($id);
+        $isUserExists = $this->userRepository->getBy($username);
 
         if (!$isUserExists) {
             return false;

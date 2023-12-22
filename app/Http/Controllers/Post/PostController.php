@@ -51,7 +51,7 @@ class PostController extends Controller
 
             $result = $this->postService->create($data);
 
-            return response()->json(['user' => $result], 201);
+            return response()->json(['post' => $result], 201);
         } catch (\Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 400);
         }
@@ -68,40 +68,33 @@ class PostController extends Controller
             return response()->json(['errors' => $e->getMessage()], 400);
         }
     }
-    public function getById(Request $request)
+    public function getBy(Request $request)
     {
         try {
-            $id = $request->input('id');
-            $user = $this->postService->getById($id);
+            $post = $this->postService->getBy($request->uuid);
+            if (!$post) return response()->json(['error' => 'not found'], 404);
 
-            if (!$user) {
-                return response()->json(['error' => 'User does not have any posts.'], 404);
-            }
-
-            return response()->json(['user' => $user], 200);
+            return response()->json(['post' => $post], 200);
         } catch (\Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 400);
         }
     }
     public function delete(Request $request) {
         try {
-            $result = $this->postService->delete($request->post_id);
+            $result = $this->postService->delete($request->uuid);
 
-            if (!$result) {
-                return response()->json(['errors' => ['Post not found']], 404);
-            }
+            if ($result) return response()->json(['status'=> true, "Post Successfully deleted"], 204);
+            else return response()->json(['status'=> false,'message' => 'Post not found'], 404);
 
-            return response()->json(["Post Successfully deleted"], 204);
         } catch (\Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 400);
         }
     }
-    public function getPostsByUserId(Request $request)
+    public function getPostsByUser()
     {
         try {
-            $user_id = $request->input('user_id');
-            $posts = $this->postService->getPostsByUserId($user_id);
-            $totalRecords = $this->postService->getTotalPostsCountByUserId($user_id);
+            $posts = $this->postService->getPostsByUser();
+            $totalRecords = $this->postService->getTotalPostsCountByUserId(Auth::user()->id);
 
             if (!$posts) {
                 return response()->json(['message' => 'No posts found for this user.'], 404);

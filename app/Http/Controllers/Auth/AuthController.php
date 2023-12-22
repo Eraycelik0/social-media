@@ -23,10 +23,9 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'first_name'=>'required',
             'last_name'=>'required',
-            'password' => 'required|min:6',
+            'password' => 'required|min:8|regex:/^.*(?=.{7,})(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
             'date_of_birth' => 'required|date|date_format:Y-m-d',
-            'gender' => 'required|in:Male,Female,Other',
-            'profile_photo_url' => 'file|mimes:jpg,jpeg,png',
+            'gender' => 'in:Male,Female,Other',
         ]);
 
         if ($validator->fails()) {
@@ -44,7 +43,7 @@ class AuthController extends Controller
         $user->gender = $request->input('gender');
         if($request->has('profile_photo')) {
             $image = MediaService::processImage($request->file('profile_photo'));
-            if (!isNull($image)) {
+            if ($image) {
                 $user->profile_photo_url = $image;
             } else {
                 return response()->json(['status' => false, 'message' => 'Invalid profile photo'], 400);
@@ -58,10 +57,10 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $email = $request->input('email');
+        $login = $request->input('login');
         $password = $request->input('password');
 
-        if (Auth::attempt(['email' => $email, 'password' => $password])) {
+        if (Auth::attempt(['email' => $login, 'password' => $password]) || Auth::attempt(['username' => $login, 'password' => $password])) {
             $user = Auth::user();
             $token = $user->createToken('login');
 

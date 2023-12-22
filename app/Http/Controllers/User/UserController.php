@@ -20,15 +20,11 @@ class UserController extends Controller
         return $this->userService->getAll();
     }
 
-    public function get($id){
-        return $this->userService->get($id);
+    public function get($username){
+        return $this->userService->get($username);
     }
 
-    public function update(Request $request){
-        return $this->userService->update($request->id,$request->except('id'));
-    }
-
-    public function delete($id){
-        return $this->userService->delete($id);
+    public function search($username){
+        return $this->userService->get($username);
     }
 }
