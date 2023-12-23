@@ -37,6 +37,7 @@ class ProfileController extends Controller {
         if($request->has('last_name')) $user->last_name = $request->input('last_name');
         if($request->has('date_of_birth')) $user->date_of_birth = (new DateTime($request->date_of_birth))->format('Y-m-d');
         if($request->has('gender')) $user->gender = $request->input('gender');
+        if($request->has('title')) $user->title = $request->input('title');
         if($request->has('profile_photo')) {
             $image = MediaService::processImage($request->file('profile_photo'));
             if ($image != false) {

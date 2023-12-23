@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password');
             $table->date('date_of_birth')->nullable();
             $table->enum('gender', ['Male', 'Female'])->nullable();
+            $table->string('title')->nullable();
             $table->string('description')->nullable();
             $table->string('profile_photo_url')->nullable();
 
