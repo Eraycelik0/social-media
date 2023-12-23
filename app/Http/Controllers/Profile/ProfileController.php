@@ -18,6 +18,7 @@ class ProfileController extends Controller {
 
     public function update(Request $request) {
         $user = Auth::user();
+
         $validator = Validator::make($request->all(), [
             'username' => 'alpha_dash|unique:users,username,' . $user->id,
             'email' => 'email|unique:users,email,' . $user->id,
@@ -46,7 +47,7 @@ class ProfileController extends Controller {
             $user->last_name = $request->input('last_name');
         }
         if ($request->has('date_of_birth')) {
-            $user->date_of_birth = (new DateTime($request->date_of_birth))->format('Y-m-d');
+            $user->date_of_birth = date_create_from_format('Y-m-d', $request->input('date_of_birth'))->format('Y-m-d');
         }
         if ($request->has('gender')) {
             $user->gender = $request->input('gender');
@@ -55,7 +56,7 @@ class ProfileController extends Controller {
             $user->title = $request->input('title');
         }
         if ($request->has('description')) {
-            $user->title = $request->input('description');
+            $user->description = $request->input('description'); // Değişiklik burada
         }
         if ($request->has('profile_photo')) {
             $image = MediaService::processImage($request->file('profile_photo'));
