@@ -3,19 +3,27 @@
 namespace App\Repositories\Comment;
 
 use App\Models\Comment;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
-class CommentRepository implements CommentInterface {
+class CommentRepository implements CommentInterface
+{
+    public function check($id)
+    {
+        return Comment::with('user')->where('id', Crypt::decrypt($id))->where('user_id', auth()->user()->id)->first();
+    }
 
     public function create(array $data): Comment
     {
-        return Comment::create($data);
+        $comment = Comment::create($data);
+        $comment = Comment::with('user')->where('id', $comment->id)->first();
+        $comment->uuid = $comment->encrypted_id;
+        return $comment;
     }
 
-    public function update(Comment $comment): Comment
+    public function update(Comment $comment, array $data): Comment
     {
-        $comment->save();
+        $comment->update($data);
         return $comment;
     }
 
@@ -24,13 +32,35 @@ class CommentRepository implements CommentInterface {
         return $comment->delete();
     }
 
+    public function getAll()
+    {
+        return Comment::all();
+    }
+
     public function getById($id): ?Comment
     {
         return Comment::find($id);
     }
 
-    public function getAll()
+    public function getCommentByUser()
     {
-        return Comment::all();
+        $posts = Comment::with('user')->where('user_id', Auth::user()->id)->get();
+
+        $posts->each(function ($post) {
+            $post->uuid = $post->encrypted_id;
+        });
+
+        return $posts;
+    }
+
+    public function getTotalCommentsCountByUserId($user_id)
+    {
+        return Comment::where('user_id', $user_id)->count();
+    }
+
+    public function getBy($id): ?Comment {
+        $comment =  Comment::with('user')->where('id', Crypt::decrypt($id))->first();
+        $comment->uuid = $comment->encrypted_id;
+        return $comment;
     }
 }

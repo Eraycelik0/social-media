@@ -54,6 +54,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/user', [PostController::class, 'getPostsByUser'])->name('user.posts');
     });
 
+    // Comment
+    Route::prefix('/comment')->name('comment.')->group(function (){
+        Route::post('/create', [CommentController::class, 'create'])->name('comment.create');
+        Route::post('/create-child-comment/{id}', [CommentController::class, 'createChildComment'])->name('comments.createChild');
+        Route::post('/update', [CommentController::class, 'update'])->name('comment.update');
+        Route::delete('/{uuid}/delete', [CommentController::class, 'delete'])->name('comment.delete');
+        Route::get('/{uuid}', [CommentController::class, 'getBy'])->name('comment.get');
+        Route::post('/user', [CommentController::class, 'getCommentByUser'])->name('user.comments');
+    });
+
     // Messages CRUD Operations
     Route::prefix('/messages')->group(function () {
         Route::get('/getList/{id}',[MessageController::class,'getList']);
@@ -67,15 +77,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/follow-request/{followed_id}', [FollowerController::class,'sendFollowRequest']);
         Route::post('/accept-follow-request/{follower_id}', [FollowerController::class,'acceptFollowRequest']);
         Route::delete('/unfollow/{to}', [FollowerController::class, 'unfollowUser']);
-    });
-
-    // Comment
-    Route::prefix('/comment')->name('comment.')->group(function (){
-        Route::get('/get',[CommentController::class,'get'])->name('get');
-        Route::get('/getAll',[CommentController::class,'getAll'])->name('getAll');
-        Route::post('/create',[CommentController::class,'create'])->name('create');
-        Route::put('/update',[CommentController::class,'update'])->name('update');
-        Route::delete('/delete',[CommentController::class,'delete'])->name('delete');
     });
 
     Route::prefix('/like')->name('like.')->group(function (){
