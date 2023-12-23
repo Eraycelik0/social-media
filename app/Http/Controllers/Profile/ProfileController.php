@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-
-use function PHPUnit\Framework\isNull;
 
 class ProfileController extends Controller {
 
@@ -42,7 +39,7 @@ class ProfileController extends Controller {
         if($request->has('gender')) $user->gender = $request->input('gender');
         if($request->has('profile_photo')) {
             $image = MediaService::processImage($request->file('profile_photo'));
-            if (!isNull($image)) {
+            if ($image != false) {
                 $user->profile_photo_url = $image;
             } else {
                 return response()->json(['status' => false, 'message' => 'Invalid profile photo'], 400);
