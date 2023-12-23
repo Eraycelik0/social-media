@@ -44,13 +44,13 @@ class CommentRepository implements CommentInterface
 
     public function getCommentByUser()
     {
-        $posts = Comment::with('user')->where('user_id', Auth::user()->id)->get();
+        $comments = Comment::with('user')->where('user_id', Auth::user()->id)->get();
 
-        $posts->each(function ($post) {
-            $post->uuid = $post->encrypted_id;
+        $comments->each(function ($comment) {
+            $comment->uuid = $comment->encrypted_id;
         });
 
-        return $posts;
+        return $comments;
     }
 
     public function getTotalCommentsCountByUserId($user_id)

@@ -81,16 +81,6 @@ class User extends Authenticatable
         return $this->hasMany(RecommendationData::class);
     }
 
-    public function followers()
-    {
-        return $this->hasMany(Follower::class, 'following_id', 'user_id');
-    }
-
-    public function following()
-    {
-        return $this->hasMany(Follower::class, 'followed_id', 'user_id');
-    }
-
     public function sentMessages()
     {
         return $this->hasMany(Message::class, 'sender_id', 'user_id');
@@ -101,8 +91,18 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id', 'user_id');
     }
 
-    public function sharedMedia()
+    public function followers()
     {
-        return $this->hasMany(MediaShare::class);
+        return $this->hasMany(Follower::class, 'to', 'id');
+    }
+
+    public function following()
+    {
+        return $this->hasMany(Follower::class, 'from', 'id');
+    }
+
+    public function followerUser()
+    {
+        return $this->belongsTo(User::class, 'from', 'id');
     }
 }

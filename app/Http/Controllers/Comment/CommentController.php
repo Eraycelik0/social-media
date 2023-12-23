@@ -18,11 +18,11 @@ class CommentController extends Controller
         $this->commentService = $commentService;
     }
 
-    public function getCommentByUser()
+    public function getCommentsByUser()
     {
         try {
             $comment = $this->commentService->getCommentByUser();
-            $totalRecords = $this->commentService->getTotalCommentsCountByUserId();
+            $totalRecords = $this->commentService->getTotalCommentsCountByUserId(Auth::user()->id);
 
             if (!$comment) {
                 return response()->json(['message' => 'No comment found for this user'], 404);
@@ -42,7 +42,6 @@ class CommentController extends Controller
 
     public function getBy(Request $request)
     {
-
         try {
             $comment = $this->commentService->getBy($request->uuid);
             if (!$comment) return response()->json(['error' => 'not found'], 404);
@@ -51,7 +50,6 @@ class CommentController extends Controller
         } catch (\Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 400);
         }
-
 
     }
 

@@ -33,18 +33,16 @@ Route::prefix('/auth')->group(function () {
 
 
 Route::middleware('auth:sanctum')->group(function () {
-
+    // User profile CRUD Operations
     Route::prefix('/profile')->group(function () {
         Route::get('/detail', [ProfileController::class, 'detail']);
         Route::post('/update', [ProfileController::class, 'update']);
     });
-
     // User CRUD Operations
     Route::prefix('/users')->group(function () {
         Route::get('/',[UserController::class,'getAll'])->name('users.getAll');
         Route::get('/get/{id}', [UserController::class, 'get'])->name('users.get');
     });
-
     // User Post CRUD Operations
     Route::prefix('/posts')->group(function () {
         Route::post('/create', [PostController::class, 'create'])->name('post.create');
@@ -53,7 +51,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{uuid}', [PostController::class, 'getBy'])->name('post.get');
         Route::post('/user', [PostController::class, 'getPostsByUser'])->name('user.posts');
     });
-
     // Comment
     Route::prefix('/comment')->name('comment.')->group(function (){
         Route::post('/create', [CommentController::class, 'create'])->name('comment.create');
@@ -61,9 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/update', [CommentController::class, 'update'])->name('comment.update');
         Route::delete('/{uuid}/delete', [CommentController::class, 'delete'])->name('comment.delete');
         Route::get('/{uuid}', [CommentController::class, 'getBy'])->name('comment.get');
-        Route::post('/user', [CommentController::class, 'getCommentByUser'])->name('user.comments');
+        Route::post('/user-comment', [CommentController::class, 'getCommentsByUser'])->name('user.comments');
     });
-
     // Messages CRUD Operations
     Route::prefix('/messages')->group(function () {
         Route::get('/getList/{id}',[MessageController::class,'getList']);
@@ -73,12 +69,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User follower CRUD Operations
     Route::prefix('/follow')->group(function () {
-        Route::post('/{followed_id}', [FollowerController::class, 'followUser']);
-        Route::post('/follow-request/{followed_id}', [FollowerController::class,'sendFollowRequest']);
-        Route::post('/accept-follow-request/{follower_id}', [FollowerController::class,'acceptFollowRequest']);
+        Route::post('/{username}', [FollowerController::class, 'followUser']);
+        Route::post('/follow-request/{username}', [FollowerController::class,'sendFollowRequest']);
+        Route::post('/accept-follow-request/{username}', [FollowerController::class,'acceptFollowRequest']);
         Route::delete('/unfollow/{to}', [FollowerController::class, 'unfollowUser']);
+        Route::get('follow-requests', [FollowerController::class, 'getFollowRequests']);
+        Route::get('follower-count/{username}', [FollowerController::class, 'getFollowerList']);
+        Route::get('following-count/{username}', [FollowerController::class, 'getFollowingList']);
     });
-
+    // User like CRUD Operations
     Route::prefix('/like')->name('like.')->group(function (){
         Route::get('/get',[LikeController::class,'get'])->name('get');
         Route::get('/getAll',[LikeController::class,'getAll'])->name('getAll');

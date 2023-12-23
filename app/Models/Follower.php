@@ -17,13 +17,13 @@ class Follower extends Model
         'status',
     ];
 
-    public function followerUser()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'following_id', 'id');
+        return $this->belongsTo(User::class, 'to', 'id');
     }
 
-    public function followedUser()
+    public function followerUser()
     {
-        return $this->belongsTo(User::class, 'followed_id', 'id');
+        return $this->belongsTo(User::class, 'from', 'id');
     }
 }
