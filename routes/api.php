@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Comment\CommentController;
 use App\Http\Controllers\Follower\FollowerController;
 use App\Http\Controllers\Like\LikeController;
@@ -26,8 +27,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('/auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/send-password-reset-link',  [AuthController::class, 'sendPasswordResetLink'] );
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'forgot_password_mail']);
+    Route::post('/reset-password', [ForgotPasswordController::class, 'reset_password']);
 });
 
 
