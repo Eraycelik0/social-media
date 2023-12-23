@@ -3,6 +3,7 @@
 namespace App\Repositories\Post;
 
 use App\Models\Post;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
@@ -28,8 +29,18 @@ class PostRepository implements PostInterface {
         return $post->delete();
     }
     public function getBy($id): ?Post {
-        $post =  Post::with('user')->where('id', Crypt::decrypt($id))->first();
+        $post = Post::with('user', 'comments', 'likes')->where('id', Crypt::decrypt($id))->first();
         $post->uuid = $post->encrypted_id;
+
+        $post->comment_count = count($post->comments);
+        $post->like_count = count($post->likes);
+        foreach ($post->comments as $comment) {
+            $comment->uuid = $comment->encrypted_id;
+        }
+
+        foreach ($post->likes as $like) {
+            $like->uuid = $like->encrypted_id;
+        }
         return $post;
     }
     public function getAll()

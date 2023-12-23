@@ -19,13 +19,10 @@ class Post extends Model
         'pinned_post_id',
         'deleted_at',
     ];
-    
+
     protected $fillable = [
         'user_id',
         'post_text',
-        'like_count',
-        'comment_count',
-        'share_count',
         'pinned_post_id',
         'media_share'
     ];

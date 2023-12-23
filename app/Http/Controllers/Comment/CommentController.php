@@ -7,6 +7,7 @@ use App\Repositories\Comment\CommentRepository;
 use App\Services\Comment\CommentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
@@ -57,16 +58,19 @@ class CommentController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'post_id' => 'required|exists:posts,id',
-                'comment_text' => 'required|string',
-                'parent_id' => 'nullable|exists:comments,id',
+                'post_id' => 'required',
+                'comment_text' => 'required|string'
             ]);
 
             $user_id = Auth::id();
 
-            $parent_id = $validatedData['parent_id'] ?? null;
+            try {
+                $parent_id = isset($request->parent_id) ? Crypt::decrypt($request->parent_id) : null;
+            } catch (\Throwable $th) {
+                return response()->json(['error' => 'Parent comment not found'], 404);
+            }
 
-            if ($parent_id) {
+            if (isset($parent_id)) {
                 $parentComment = $this->commentService->getBy($parent_id);
                 if (!$parentComment) {
                     return response()->json(['error' => 'Parent comment not found'], 404);
@@ -75,47 +79,18 @@ class CommentController extends Controller
 
             $commentData = [
                 'user_id' => $user_id,
-                'post_id' => $validatedData['post_id'],
-                'comment_text' => $validatedData['comment_text'],
+                'post_id' => Crypt::decrypt($request->post_id),
+                'comment_text' => $request->comment_text,
                 'parent_id' => $parent_id,
             ];
 
             $result = $this->commentService->create($commentData);
+            return response()->json(['status' => true, 'message' => $result]);
 
-            return response()->json($result, $result['status'] === 'success' ? 201 : 400);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-    public function createChildComment(Request $request, $parentCommentId)
-    {
-        try {
-            $parentComment = $this->commentService->getBy($parentCommentId);
-
-            if (!$parentComment) {
-                return response()->json(['error' => 'Parent comment not found'], 404);
-            }
-
-            $validatedData = $request->validate([
-                'post_id' => 'required|exists:posts,id',
-                'comment_text' => 'required|string',
-            ]);
-
-            $commentData = [
-                'user_id' => Auth::id(),
-                'post_id' => $validatedData['post_id'],
-                'comment_text' => $validatedData['comment_text'],
-                'parent_id' => $parentComment->id,
-            ];
-            $result = $this->commentService->create($commentData);
-
-            return response()->json($result, $result['status'] === 'success' ? 201 : 400);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
-
 
     public function update(Request $request)
     {
@@ -128,13 +103,12 @@ class CommentController extends Controller
         }
     }
 
-    public function delete(Request $request)
-    {
+    public function delete(Request $request) {
         try {
             $result = $this->commentService->delete($request->uuid);
 
-            if ($result) return response()->json(['status'=> true, "Comment Successfully deleted"], 204);
-            else return response()->json(['status'=> false,'message' => 'Comment not found'], 404);
+            if (!$result) return response()->json(['status'=> false,'message' => 'Comment not found'], 404);
+            else return response()->json(['status'=> true,'message' => 'Comment deleted']);
 
         } catch (\Exception $e) {
             return response()->json(['errors' => $e->getMessage()], 400);

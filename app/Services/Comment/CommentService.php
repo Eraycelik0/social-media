@@ -3,6 +3,7 @@
 namespace App\Services\Comment;
 
 use App\Repositories\Comment\CommentRepository;
+use Illuminate\Support\Facades\Crypt;
 
 class CommentService
 {
@@ -31,15 +32,15 @@ class CommentService
     }
 
     public function update(array $data){
-        $check = $this->commentRepository->check($data['post_id']);
-        return $this->commentRepository->update($check,$data);
+        $check = $this->commentRepository->check($data['comment_id']);
+        return $this->commentRepository->update($check, $data);
 
     }
 
     public function delete($id): bool{
         $check = $this->commentRepository->check($id);
         if ($check) {
-            return  $this->commentRepository->delete($check);
+            return $this->commentRepository->delete($check);
         } else {
             return false;
         }

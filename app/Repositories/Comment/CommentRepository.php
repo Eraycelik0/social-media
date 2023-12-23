@@ -24,6 +24,8 @@ class CommentRepository implements CommentInterface
     public function update(Comment $comment, array $data): Comment
     {
         $comment->update($data);
+        $comment->with('user');
+        $comment->uuid = $comment->encrypted_id;
         return $comment;
     }
 
@@ -59,8 +61,13 @@ class CommentRepository implements CommentInterface
     }
 
     public function getBy($id): ?Comment {
-        $comment =  Comment::with('user')->where('id', Crypt::decrypt($id))->first();
-        $comment->uuid = $comment->encrypted_id;
-        return $comment;
+        try {
+            $comment =  Comment::with('user')->where('id', Crypt::decrypt($id))->first();
+            $comment->uuid = $comment->encrypted_id;
+            return $comment;
+        } catch (\Throwable $th) {
+            return false;
+        }
+
     }
 }

@@ -16,8 +16,15 @@ class Comment extends Model
         'user_id',
         'post_id',
         'parent_id',
-        'comment_text',
-        'comment_date',
+        'comment_text'
+    ];
+
+    protected $hidden = [
+        'user_id',
+        'id',
+        'parent_id',
+        'post_id',
+        'deleted_at'
     ];
 
     public function user()

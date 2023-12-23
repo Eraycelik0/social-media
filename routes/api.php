@@ -55,7 +55,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Comment
     Route::prefix('/comment')->name('comment.')->group(function (){
         Route::post('/create', [CommentController::class, 'create'])->name('comment.create');
-        Route::post('/create-child-comment/{id}', [CommentController::class, 'createChildComment'])->name('comments.createChild');
         Route::post('/update', [CommentController::class, 'update'])->name('comment.update');
         Route::delete('/{uuid}/delete', [CommentController::class, 'delete'])->name('comment.delete');
         Route::get('/{uuid}', [CommentController::class, 'getBy'])->name('comment.get');

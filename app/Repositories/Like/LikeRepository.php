@@ -3,11 +3,11 @@
 namespace App\Repositories\Like;
 
 use App\Models\Like;
+use Illuminate\Support\Facades\Auth;
 
 class LikeRepository implements LikeInterface
 {
-    public function create(array $data): Like
-    {
+    public function create(array $data): Like {
         return Like::create($data);
     }
     public function delete(Like $like): bool
@@ -16,7 +16,7 @@ class LikeRepository implements LikeInterface
     }
     public function getById($id): ?Like
     {
-        return Like::find($id);
+        return Like::where('id', $id)->where('user_id', Auth::user()->id)->first();
     }
     public function getAll()
     {
