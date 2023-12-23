@@ -23,7 +23,7 @@ class ProfileController extends Controller {
             'username' => 'alpha_dash|unique:users,username,' . $user->id,
             'email' => 'email|unique:users,email,' . $user->id,
             'date_of_birth' => 'date|date_format:Y-m-d',
-            'gender' => 'in:Male,Female,Other',
+            'gender' => 'in:Male,Female',
             'profile_photo' => 'file',
         ]);
 
@@ -56,7 +56,7 @@ class ProfileController extends Controller {
             $user->title = $request->input('title');
         }
         if ($request->has('description')) {
-            $user->description = $request->input('description'); // Değişiklik burada
+            $user->description = $request->input('description');
         }
         if ($request->has('profile_photo')) {
             $image = MediaService::processImage($request->file('profile_photo'));
