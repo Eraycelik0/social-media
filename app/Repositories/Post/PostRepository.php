@@ -48,10 +48,18 @@ class PostRepository implements PostInterface {
         return Post::get();
     }
     public function getPostsByUser() {
-        $posts = Post::with('user')->where('user_id', Auth::user()->id)->get();
+        $posts = Post::with('user', 'comments', 'likes')->where('user_id', Auth::user()->id)->get();
 
         $posts->each(function ($post) {
             $post->uuid = $post->encrypted_id;
+            $post->comment_count = count($post->comments);
+            $post->like_count = count($post->likes);
+            foreach ($post->comments as $comment) {
+                $comment->uuid = $comment->encrypted_id;
+            }
+            foreach ($post->likes as $like) {
+                $like->uuid = $like->encrypted_id;
+            }
         });
 
         return $posts;
