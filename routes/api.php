@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // User Post CRUD Operations
     Route::prefix('/posts')->group(function () {
+        Route::get('/getAll',[PostController::class,'getAll'])->name('post.getAll');
         Route::post('/create', [PostController::class, 'create'])->name('post.create');
         Route::post('/update', [PostController::class, 'update'])->name('post.update');
         Route::delete('/{uuid}/delete', [PostController::class, 'delete'])->name('post.delete');

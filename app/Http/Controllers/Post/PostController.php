@@ -19,6 +19,9 @@ class PostController extends Controller
         $this->postService = $postService;
         $this->mediaService = $mediaService;
     }
+    public function getAll(){
+        return response(['posts'=>$this->postService->getAll()]);
+    }
     public function create(Request $request) {
         $validator = Validator::make($request->all(), [
             'post_text' => 'required',

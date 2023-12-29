@@ -45,7 +45,15 @@ class PostRepository implements PostInterface {
     }
     public function getAll()
     {
-        return Post::get();
+        $posts = Post::with('user', 'comments', 'likes')->get();
+
+        // Her bir post için şifrelenmiş ve şifrelenmemiş id değerlerini ekleyelim
+        $posts = $posts->map(function ($post) {
+            $post->uuid = $post->getEncryptedIdAttribute(); // Şifrelenmiş ID değeri
+            return $post;
+        });
+
+        return $posts;
     }
     public function getPostsByUser() {
         $posts = Post::with('user', 'comments', 'likes')->where('user_id', Auth::user()->id)->get();
